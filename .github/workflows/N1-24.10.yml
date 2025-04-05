@@ -11,9 +11,9 @@ on:
 env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt
   REPO_BRANCH: openwrt-24.10
+  REPO_TAGS: v24.10.0
   CONFIG_FILE: N1/.config
   DIY_SH: N1/diy.sh
-  FILES: N1/files
   TZ: Asia/Shanghai
 
 jobs:
@@ -51,7 +51,10 @@ jobs:
       working-directory: /workdir
       run: |
         git clone $REPO_URL -b $REPO_BRANCH --single-branch --depth=1 openwrt
+        cd openwrt
+        git checkout $REPO_TAGS
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        
 
     - name: Update & Install feeds
       run: |
@@ -65,7 +68,6 @@ jobs:
 
     - name: Load custom config
       run: |
-        [ -e $FILES ] && mv $FILES openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
 
     - name: SSH connect to Actions
@@ -94,11 +96,10 @@ jobs:
       env:
         OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
         KERNEL_REPO_URL: breakingbadboy/OpenWrt
-        KERNEL_VERSION_NAME: 6.6.y
-        PACKAGE_SOC: diy
+        KERNEL_VERSION_NAME: 6.12.y
+        PACKAGE_SOC: s905d
         GZIP_IMGS: .xz
-        SCRIPT_DIY_PATH: N1/mk_s905d_n1.sh
-        WHOAMI: pudding
+        WHOAMI: shadow
         SW_FLOWOFFLOAD: 0
         SFE_FLOW: 0
 
@@ -111,7 +112,6 @@ jobs:
         tag_name: OpenWrt_${{ env.PACKAGED_OUTPUTDATE }}
         files: ${{ env.PACKAGED_OUTPUTPATH }}/*.img.xz
         body: |
-          首次使用建议全新刷写
           * 基本信息
           IP: 192.168.100.2
           账户: root
