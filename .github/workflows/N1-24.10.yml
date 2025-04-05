@@ -106,7 +106,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: N1_OpenWrt_2410_${{ env.PACKAGED_OUTPUTDATE }}
+        tag_name: N1_${{ env.PACKAGED_OUTPUTDATE }}
         files: ${{ env.PACKAGED_OUTPUTPATH }}/*.img.xz
         body: |
           * 基本信息
